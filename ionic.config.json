@@ -1,0 +1,7 @@
+{
+  "name": "poklad_app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
