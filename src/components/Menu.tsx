@@ -11,67 +11,91 @@ import {
 } from '@ionic/react';
 
 import { useLocation } from 'react-router-dom';
-import { archiveOutline, archiveSharp, bookmarkOutline, heartOutline, heartSharp, mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, trashOutline, trashSharp, warningOutline, warningSharp } from 'ionicons/icons';
+import { appsOutline, home, informationOutline, mailSharp } from 'ionicons/icons';
 import './Menu.css';
 
 interface AppPage {
-  url: string;
+  url: APP_ROUTES;
   iosIcon: string;
   mdIcon: string;
   title: string;
+  requireAuth: boolean;
+}
+
+
+export enum RouteNames {
+  HOME = 'HOME',
+  LOGIN = 'LOGIN',
+  DASHBOARD = 'DASHBOARD',
+  REGISTRATION = 'REGISTRATION',
+  POKLAD_DETAIL = 'POKLAD DETAIL'
+}
+
+export enum APP_ROUTES {
+  home = '/home',
+  about = '/about',
+  poklads = '/poklads',
+  pokladDetail = '/',
+  register = '/register',
+  login = '/login'
 }
 
 const appPages: AppPage[] = [
   {
-    title: 'Inbox',
-    url: '/page/Inbox',
-    iosIcon: mailOutline,
-    mdIcon: mailSharp
+    title: 'Home',
+    url: APP_ROUTES.home,
+    iosIcon: home,
+    mdIcon: mailSharp,
+    requireAuth: false,
+  },
+  // {
+  //   title: 'Register',
+  //   url: APP_ROUTES.register,
+  //   iosIcon: home,
+  //   mdIcon: mailSharp,
+  //   requireAuth: false,
+  // },
+  {
+    title: 'Login',
+    url: APP_ROUTES.login,
+    iosIcon: home,
+    mdIcon: mailSharp,
+    requireAuth: false,
   },
   {
-    title: 'Outbox',
-    url: '/page/Outbox',
-    iosIcon: paperPlaneOutline,
-    mdIcon: paperPlaneSharp
+    title: 'Poklads',
+    url: APP_ROUTES.poklads,
+    iosIcon: appsOutline,
+    mdIcon: appsOutline,
+    requireAuth: true,
   },
   {
-    title: 'Favorites',
-    url: '/page/Favorites',
-    iosIcon: heartOutline,
-    mdIcon: heartSharp
+    title: 'About',
+    url: APP_ROUTES.about,
+    iosIcon: informationOutline,
+    mdIcon: informationOutline,
+    requireAuth: true,
   },
-  {
-    title: 'Archived',
-    url: '/page/Archived',
-    iosIcon: archiveOutline,
-    mdIcon: archiveSharp
-  },
-  {
-    title: 'Trash',
-    url: '/page/Trash',
-    iosIcon: trashOutline,
-    mdIcon: trashSharp
-  },
-  {
-    title: 'Spam',
-    url: '/page/Spam',
-    iosIcon: warningOutline,
-    mdIcon: warningSharp
-  }
+
+
 ];
 
-const labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
+interface iMenuProps {
+  loggedIn: boolean
+}
 
-const Menu: React.FC = () => {
+const Menu: React.FC<iMenuProps> = ({ loggedIn }: iMenuProps) => {
   const location = useLocation();
+
+  const authRoutesFilter = (page: AppPage) => loggedIn === page.requireAuth || !page.requireAuth;
 
   return (
     <IonMenu contentId="main" type="overlay">
       <IonContent>
-        <IonList id="inbox-list">
+        <IonList id="nav_menu">
           <IonListHeader>Inbox</IonListHeader>
           <IonNote>hi@ionicframework.com</IonNote>
-          {appPages.map((appPage, index) => {
+          {appPages.filter(authRoutesFilter).map((appPage, index) => {
             return (
               <IonMenuToggle key={index} autoHide={false}>
                 <IonItem className={location.pathname === appPage.url ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
@@ -83,15 +107,6 @@ const Menu: React.FC = () => {
           })}
         </IonList>
 
-        <IonList id="labels-list">
-          <IonListHeader>Labels</IonListHeader>
-          {labels.map((label, index) => (
-            <IonItem lines="none" key={index}>
-              <IonIcon slot="start" icon={bookmarkOutline} />
-              <IonLabel>{label}</IonLabel>
-            </IonItem>
-          ))}
-        </IonList>
       </IonContent>
     </IonMenu>
   );
