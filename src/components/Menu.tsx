@@ -4,15 +4,14 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonListHeader,
   IonMenu,
   IonMenuToggle,
-  IonNote,
 } from '@ionic/react';
 
 import { useLocation } from 'react-router-dom';
 import { appsOutline, home, informationOutline, mailSharp } from 'ionicons/icons';
 import './Menu.css';
+import { logout } from '../utils/firebase';
 
 interface AppPage {
   url: APP_ROUTES;
@@ -20,6 +19,7 @@ interface AppPage {
   mdIcon: string;
   title: string;
   requireAuth: boolean;
+  hideWhenLoggedIn?: boolean;
 }
 
 
@@ -48,19 +48,13 @@ const appPages: AppPage[] = [
     mdIcon: mailSharp,
     requireAuth: false,
   },
-  // {
-  //   title: 'Register',
-  //   url: APP_ROUTES.register,
-  //   iosIcon: home,
-  //   mdIcon: mailSharp,
-  //   requireAuth: false,
-  // },
   {
     title: 'Login',
     url: APP_ROUTES.login,
     iosIcon: home,
     mdIcon: mailSharp,
     requireAuth: false,
+    hideWhenLoggedIn: true,
   },
   {
     title: 'Poklads',
@@ -87,14 +81,18 @@ interface iMenuProps {
 const Menu: React.FC<iMenuProps> = ({ loggedIn }: iMenuProps) => {
   const location = useLocation();
 
-  const authRoutesFilter = (page: AppPage) => loggedIn === page.requireAuth || !page.requireAuth;
+  const authRoutesFilter = (page: AppPage) => {
+    if (loggedIn && page.hideWhenLoggedIn) {
+      return false;
+    }
+
+    return loggedIn === page.requireAuth || !page.requireAuth
+  };
 
   return (
-    <IonMenu contentId="main" type="overlay">
+    <IonMenu contentId="main" type="push">
       <IonContent>
         <IonList id="nav_menu">
-          <IonListHeader>Inbox</IonListHeader>
-          <IonNote>hi@ionicframework.com</IonNote>
           {appPages.filter(authRoutesFilter).map((appPage, index) => {
             return (
               <IonMenuToggle key={index} autoHide={false}>
@@ -105,6 +103,11 @@ const Menu: React.FC<iMenuProps> = ({ loggedIn }: iMenuProps) => {
               </IonMenuToggle>
             );
           })}
+          {!!loggedIn &&
+            <IonItem button onClick={logout}>
+              <IonLabel>Log Out</IonLabel>
+            </IonItem>
+          }
         </IonList>
 
       </IonContent>

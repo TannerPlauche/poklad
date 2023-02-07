@@ -1,7 +1,8 @@
-import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact, useIonRouter } from '@ionic/react';
+import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/react';
+
 import { useEffect, useState } from 'react';
 import { IonReactRouter } from '@ionic/react-router';
-import { Redirect, Route, useHistory } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import Menu, { APP_ROUTES } from './components/Menu';
 import Page from './pages/Page';
 
@@ -23,18 +24,27 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import { POKLAD_COLLECTION } from './utils/firebase';
-import { doc, setDoc, collection, query, where, getDocs } from "firebase/firestore";
-import { auth, registerWithEmailAndPassword } from './utils/firebase';
+import { query, getDocs } from "firebase/firestore";
+import { auth } from './utils/firebase';
 import { useAuthState } from "react-firebase-hooks/auth";
 import LoginPage from './pages/Login/LoginPage';
-import { createBrowserHistory } from 'history';
+import RegisterPage from './pages/Register/RegisterPage';
+import HomePage from './pages/Home/HomePage';
+import { iPoklad } from './utils/types';
+import PokladsPage from './pages/Poklads/PokladsPage';
 setupIonicReact();
 
 const App: React.FC = () => {
 
-  const [poklads, setPoklads] = useState<any[]>([]);
-  const [user, loading, error] = useAuthState(auth);
-
+  const [
+    poklads,
+    setPoklads
+  ] = useState<iPoklad[]>([]);
+  const [
+    user,
+    // loading,
+    // error
+  ] = useAuthState(auth);
 
   useEffect(() => {
     const getData = async () => {
@@ -52,13 +62,7 @@ const App: React.FC = () => {
 
     getData();
 
-    // setDoc(
-    //     doc(POKLAD_COLLECTION),
-    //     { name: 'poklad 3', amount: 10000, region: 'midwest' }
-    // );
   }, []);;
-
-  const history = useIonRouter()
 
   return (
     <IonApp>
@@ -66,23 +70,33 @@ const App: React.FC = () => {
         <IonSplitPane contentId="main">
           <Menu loggedIn={!!user} />
           <IonRouterOutlet id="main">
-            <Route path="/" exact={true}>
-              <Redirect to="/page/Inbox" />
-            </Route>
-            <Route path={APP_ROUTES.login} exact={true}>
+            <Route path={APP_ROUTES.login}
+              exact={true}>
               <LoginPage />
             </Route>
-            <Route path={APP_ROUTES.home} exact={true}>
-              <Page />
+            <Route path={APP_ROUTES.register}
+              exact={true}>
+              <RegisterPage />
             </Route>
-            <Route path={APP_ROUTES.poklads} exact={true}>
-              <Page />
+            <Route path={APP_ROUTES.home}
+              exact={true}>
+              <HomePage />
             </Route>
-            <Route path={APP_ROUTES.pokladDetail} exact={true}>
-              <Page />
+            <Route path={APP_ROUTES.poklads}
+              exact={true}>
+              <PokladsPage poklads={poklads} />
             </Route>
-            <Route path={APP_ROUTES.about} exact={true}>
-              <Page />
+            <Route path={APP_ROUTES.pokladDetail}
+              exact={true}>
+              <Page
+                pageName='Poklad Detail'
+                children={null} />
+            </Route>
+            <Route path={APP_ROUTES.about}
+              exact={true}>
+              <Page
+                pageName='About'
+                children={null} />
             </Route>
           </IonRouterOutlet>
         </IonSplitPane>

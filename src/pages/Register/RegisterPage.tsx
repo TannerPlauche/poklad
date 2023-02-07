@@ -1,34 +1,116 @@
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import { useParams } from 'react-router';
-import ExploreContainer from '../../components/ExploreContainer';
-import { capitalize } from 'lodash'
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonInput, IonItem, IonLabel } from '@ionic/react';
+import { RouteComponentProps, withRouter } from 'react-router';
 import './RegisterPage.css';
+import { useEffect, useState } from 'react';
 
-const RegisterPage: React.FC = () => {
+import { auth, registerWithEmailAndPassword } from "../../utils/firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { APP_ROUTES } from '../../components/Menu';
+import Page from '../Page';
 
-    const { name } = useParams<{ name: string; }>();
+interface RegisterPageProps extends RouteComponentProps {
+    history: any;
+}
+const RegisterPage: React.FC<RegisterPageProps> = ({ history }: RegisterPageProps) => {
+
+    const [name, setName] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState("");
+    const [modalVisible, setModalVisible] = useState("");
+    const [user, loading, error] = useAuthState(auth);
+
+    const goHome = () => history.push(APP_ROUTES.home);
+    // const goToRegistration = () => history.push(APP_ROUTES.register);
+
+    useEffect(() => {
+        if (loading) {
+            return;
+        }
+        if (user) {
+            goHome();
+        }
+    }, [user, loading]);
 
     return (
-        <IonPage>
-            <IonHeader>
-                <IonToolbar>
-                    <IonButtons slot="start">
-                        <IonMenuButton />
-                    </IonButtons>
-                    <IonTitle>{capitalize(name)}</IonTitle>
-                </IonToolbar>
-            </IonHeader>
+        <Page pageName='Register'>
+            <IonContent>
+                <IonCard>
+                    <IonCardHeader>
+                        <IonCardTitle>Register</IonCardTitle>
+                        {/* <IonCardSubtitle>Yo</IonCardSubtitle> */}
+                    </IonCardHeader>
+                    <IonCardContent>
+                        <IonItem>
+                            <IonLabel position="floating" color="primary"
+                            >Name</IonLabel>
+                            <IonInput
+                                type="text"
+                                color="primary"
+                                value={name}
+                                onIonChange={(event) => {
+                                    console.log('text: ', event.target.value);
 
-            <IonContent fullscreen>
-                <IonHeader collapse="condense">
-                    <IonToolbar>
-                        <IonTitle size="large">{capitalize(name)}</IonTitle>
-                    </IonToolbar>
-                </IonHeader>
-                <ExploreContainer name={name} />
+                                    setName(event.target.value as string);
+                                }}
+                                placeholder="E-mail Address"
+                            ></IonInput>
+                        </IonItem>
+                        <IonItem>
+                            <IonLabel position="floating" color="primary"
+                            >Email</IonLabel>
+                            <IonInput
+                                type="email"
+                                color="primary"
+                                value={email}
+                                onIonChange={(event) => {
+                                    console.log('text: ', event.target.value);
+
+                                    setEmail(event.target.value as string);
+                                }}
+                                placeholder="E-mail Address"
+                            ></IonInput>
+                        </IonItem>
+                        <IonItem>
+                            <IonLabel
+                                position="floating"
+                                color="primary"
+                            >Password</IonLabel>
+                            <IonInput
+                                type="password"
+                                color="primary"
+                                value={password}
+                                onIonChange={(event) => {
+                                    console.log('text: ', event.target.value);
+                                    setPassword(event.target.value as string);
+                                }}
+                                placeholder="E-mail Address"
+                            ></IonInput>
+                        </IonItem>
+                        {/* <IonItem> */}
+
+                        {/* </IonItem> */}
+                    </IonCardContent>
+                    <IonCardContent>
+                        <IonItem>
+                            Already have an account?
+                            <IonItem routerLink={APP_ROUTES.login} routerDirection="none" lines="none" detail={false}>
+                                <IonLabel>LOG IN HERE</IonLabel>
+                            </IonItem>
+                        </IonItem>
+                    </IonCardContent>
+                    <IonButton
+                        color='primary'
+                        shape="round"
+                        size="default"
+                        onClick={() => registerWithEmailAndPassword(name, email, password)}
+                    >Register</IonButton>
+                </IonCard>
+
+
             </IonContent>
-        </IonPage>
+        </Page >
+
     );
 };
 
-export default RegisterPage;
+export default withRouter(RegisterPage);

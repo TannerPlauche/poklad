@@ -1,25 +1,26 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import { RouteComponentProps, useParams, withRouter } from 'react-router';
-import ExploreContainer from '../../components/ExploreContainer';
-import { capitalize } from 'lodash'
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonInput, IonItem, IonLabel } from '@ionic/react';
+import { RouteComponentProps, withRouter } from 'react-router';
 import './LoginPage.css';
 import { useEffect, useState } from 'react';
 
 import { auth, logInWithEmailAndPassword } from "../../utils/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { APP_ROUTES } from '../../components/Menu';
+import Page from '../Page';
 
 interface LoginPageProps extends RouteComponentProps {
     history: any;
 }
 const LoginPage: React.FC<LoginPageProps> = ({ history }: LoginPageProps) => {
 
-    const { name } = useParams<{ name: string; }>();
 
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState("");
-    const [modalVisible, setModalVisible] = useState("");
-    const [user, loading, error] = useAuthState(auth);
+    const [
+        user,
+        loading,
+        //  error
+    ] = useAuthState(auth);
 
     const goHome = () => history.push(APP_ROUTES.home);
 
@@ -28,24 +29,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ history }: LoginPageProps) => {
             return;
         }
         if (user) {
-            // navigation.reset({
-            //     index: 0,
-            //     routes: [{ name: RouteNames.HOME }],
-            // });
             goHome();
         }
     }, [user, loading]);
 
     return (
-        <IonPage>
-            <IonHeader>
-                <IonToolbar>
-                    <IonButtons slot="start">
-                        <IonMenuButton />
-                    </IonButtons>
-                    <IonTitle>Login</IonTitle>
-                </IonToolbar>
-            </IonHeader>
+        <Page pageName='Login'>
+
             <IonContent fullscreen>
 
                 <IonCard>
@@ -89,6 +79,14 @@ const LoginPage: React.FC<LoginPageProps> = ({ history }: LoginPageProps) => {
 
                         {/* </IonItem> */}
                     </IonCardContent>
+                    <IonCardContent>
+                        <IonItem>
+                            Don't have an account?
+                            <IonItem routerLink={APP_ROUTES.register} routerDirection="none" lines="none" detail={false}>
+                                <IonLabel>REGISTER HERE</IonLabel>
+                            </IonItem>
+                        </IonItem>
+                    </IonCardContent>
                     <IonButton
                         color='primary'
                         shape="round"
@@ -99,7 +97,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ history }: LoginPageProps) => {
 
 
             </IonContent>
-        </IonPage>
+        </Page>
     );
 };
 
