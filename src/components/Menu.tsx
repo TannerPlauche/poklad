@@ -35,7 +35,7 @@ export enum APP_ROUTES {
   home = '/home',
   about = '/about',
   poklads = '/poklads',
-  pokladDetail = '/',
+  pokladDetail = '/poklad/:id',
   register = '/register',
   login = '/login'
 }

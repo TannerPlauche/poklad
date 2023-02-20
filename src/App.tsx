@@ -32,6 +32,7 @@ import RegisterPage from './pages/Register/RegisterPage';
 import HomePage from './pages/Home/HomePage';
 import { iPoklad } from './utils/types';
 import PokladsPage from './pages/Poklads/PokladsPage';
+import PokladDetailPage from './pages/PokladDetail/PokladDetailPage';
 setupIonicReact();
 
 const App: React.FC = () => {
@@ -47,7 +48,15 @@ const App: React.FC = () => {
   ] = useAuthState(auth);
 
   useEffect(() => {
+    console.log(user);
+  }, [user])
+
+  useEffect(() => {
     const getData = async () => {
+      if (!user) {
+        return;
+      }
+
       const q = query(POKLAD_COLLECTION);
 
       const querySnapshot = await getDocs(q);
@@ -62,7 +71,7 @@ const App: React.FC = () => {
 
     getData();
 
-  }, []);;
+  }, [user]);;
 
   return (
     <IonApp>
@@ -88,10 +97,14 @@ const App: React.FC = () => {
             </Route>
             <Route path={APP_ROUTES.pokladDetail}
               exact={true}>
+              <PokladDetailPage poklads={poklads} />
+            </Route>
+            {/* <Route path={APP_ROUTES.pokladDetail}
+              exact={true}>
               <Page
                 pageName='Poklad Detail'
                 children={null} />
-            </Route>
+            </Route> */}
             <Route path={APP_ROUTES.about}
               exact={true}>
               <Page
