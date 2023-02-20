@@ -18,6 +18,7 @@ const PolkadDetailPage: React.FC<PolkadDetailPageProps> = ({ poklads, history }:
     console.log('params: ', params);
     const id = params.id;
     const poklad = poklads.find(poklad => poklad.id === id);
+    console.log('poklad: ', poklad);
     const goToPokladList = () => {
         history.push(APP_ROUTES.poklads);
     }

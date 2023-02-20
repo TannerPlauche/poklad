@@ -99,12 +99,6 @@ const App: React.FC = () => {
               exact={true}>
               <PokladDetailPage poklads={poklads} />
             </Route>
-            {/* <Route path={APP_ROUTES.pokladDetail}
-              exact={true}>
-              <Page
-                pageName='Poklad Detail'
-                children={null} />
-            </Route> */}
             <Route path={APP_ROUTES.about}
               exact={true}>
               <Page
