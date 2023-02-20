@@ -16,11 +16,9 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ history }: RegisterPageProp
     const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState("");
-    const [modalVisible, setModalVisible] = useState("");
     const [user, loading, error] = useAuthState(auth);
 
     const goHome = () => history.push(APP_ROUTES.home);
-    // const goToRegistration = () => history.push(APP_ROUTES.register);
 
     useEffect(() => {
         if (loading) {

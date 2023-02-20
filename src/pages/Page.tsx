@@ -3,7 +3,7 @@ import './Page.css';
 
 interface iPageProps {
   pageName: string;
-  children: any;
+  children?: any;
 }
 
 
