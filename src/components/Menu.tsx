@@ -32,6 +32,7 @@ export enum RouteNames {
 }
 
 export enum APP_ROUTES {
+  default = '/',
   home = '/home',
   about = '/about',
   poklads = '/poklads',

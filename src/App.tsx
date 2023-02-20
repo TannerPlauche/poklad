@@ -79,7 +79,7 @@ const App: React.FC = () => {
         <IonSplitPane contentId="main">
           <Menu loggedIn={!!user} />
           <IonRouterOutlet id="main">
-            <Route path={APP_ROUTES.login}
+            <Route path={[APP_ROUTES.login, APP_ROUTES.default]}
               exact={true}>
               <LoginPage />
             </Route>
